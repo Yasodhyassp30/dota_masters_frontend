@@ -1,24 +1,31 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+
+import Register from './pages/register/register';
+import { Navigate, Route, Routes } from 'react-router-dom';
+import { useSelector } from 'react-redux';
+import { RootState } from './reducers/combinedReducers';
+import Login from './pages/login/login';
+import Dashboard from './pages/dashboard/dashboard';
+import Navbar from './pages/navbar/navbar';
 
 function App() {
+  const logged = useSelector((state: RootState) => state.authreducer.isLoggedIn)
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.tsx</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div style={{
+      height: '100vh',
+      width: "100%",
+      display: 'flex',
+      flexDirection: 'row',
+    }}>
+      {logged && <Navbar />} 
+      
+      <div style={{ flex: 1 }}> 
+        <Routes>
+          <Route path="/" element={(!logged) ? <Register /> : <Navigate to="dashboard" />} />
+          <Route path="/login" element={(!logged) ? <Login /> : <Navigate to="/dashboard" />} />
+          <Route path="/register" element={(!logged) ? <Register /> : <Navigate to="/dashboard" />} />
+          <Route path="/dashboard" element={(logged) ? <Dashboard/>: <Navigate to="/login" />} />
+        </Routes>
+      </div>
     </div>
   );
 }
