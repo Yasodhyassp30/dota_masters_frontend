@@ -8,8 +8,9 @@ import {
     IconButton,
     Typography,
   } from "@mui/material";
-  import { hero } from "../../../types/heroTypes";
   import { Edit } from "@mui/icons-material";
+  import { useDispatch } from "react-redux";
+  import { TeamBoardSlice } from "../../../reducers/predictReducer/predictReducer";
   import CheckCircleOutlineIcon from '@mui/icons-material/CheckCircleOutline';
   import { useSelector } from "react-redux/es/hooks/useSelector";
   import { RootState } from "../../../reducers/combinedReducers";
@@ -17,7 +18,8 @@ import {
   export default function Teamboard() {
     const radiantHeroes = useSelector((state:RootState) => state.predictreducer.radiantHeroes);
     const direHeroes = useSelector((state:RootState) => state.predictreducer.direHeroes);
-  
+    const dispatch = useDispatch();
+
     const fontStyles = {
       fontFamily: 'Montserrat, sans-serif',
       fontWeight: 700,
@@ -89,7 +91,7 @@ import {
                             variant="h5"
                             component="div"
                           >
-                            {(hero.id===0)?"Pick Hero":hero.id}
+                            {(hero.id===0)?"Pick Hero":hero.name}
                           </Typography>
                           <Typography
                             fontSize={"0.7rem"}
@@ -107,12 +109,17 @@ import {
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <IconButton>
+                          <IconButton   onClick={() => {
+                                dispatch(TeamBoardSlice.actions.openPopup())
+                              }}>
                             <Edit
                               sx={{
                                 fontSize: "1rem",
                               }}
+
+                            
                             />
+
                           </IconButton>
                         </CardActions>
                       </Card>
@@ -137,7 +144,9 @@ import {
                   width: "60%",
                   maxWidth: "150px",
                   objectFit: "fill",
+                 
                 }}
+                alt="Vs"
                 src="/images/other/vs.png"
               />
             </div>
@@ -209,7 +218,9 @@ import {
                           </Typography>
                         </CardContent>
                         <CardActions>
-                          <IconButton>
+                          <IconButton   onClick={() => {
+                                dispatch(TeamBoardSlice.actions.openPopup())
+                              }}>
                             <Edit
                               sx={{
                                 fontSize: "1rem",

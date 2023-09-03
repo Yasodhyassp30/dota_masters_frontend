@@ -1,8 +1,17 @@
 
+import Popup from "./components/popup";
 import Teamboard from "./components/teamBoard";
+import { getHeros } from "../../reducers/predictReducer/predictAPI";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { AppDispatch } from "../..";
 
 export default function Dashboard() {
-  
+  const dispatch = useDispatch<AppDispatch>();
+  useEffect(() => {
+    dispatch(getHeros({}));
+    
+  }, []);
   return (
     <div
       style={{
@@ -16,6 +25,7 @@ export default function Dashboard() {
         
       }}
     >
+      <Popup/>
       <Teamboard/>
     </div>
   );

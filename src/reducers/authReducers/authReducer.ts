@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { User, userReturn } from "../../types/userTypes";
-import { loginuser, reAuth, registeruser } from "./authAPI";
+import { loginuser, registeruser } from "./authAPI";
 
 let currentUser: User = {
   username: "",
@@ -77,18 +77,6 @@ export const authSlice = createSlice({
       state.error = action.payload;
       state.user = currentUser;
     });
-    builder.addCase(reAuth.fulfilled, (state, action) => {
-      state.isLoggedIn = true;
-      state.user.token = action.payload.token;
-      localStorage.setItem("users", JSON.stringify(state.user));
-      state.error = "";
-    });
-    builder.addCase(reAuth.rejected, (state, action: any) => {
-      state.isLoggedIn = false;
-      state.error = action.payload;
-      state.user = currentUser;
-    });
   },
 });
 
-export { loginuser, reAuth };
