@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { hero } from "../../types/heroTypes";
-import {getHeros} from './predictAPI';
+import {getHeros,predict} from './predictAPI';
 
 
 const inititalHeros: hero[] = Array(5).fill({
@@ -33,6 +33,9 @@ export const TeamBoardSlice = createSlice({
      state.direHeroes[state.currentPosition] = action.payload.hero;
     
     },
+    setErrors:(state,action)=>{
+      state.error = action.payload;
+    },
     closePopup:(state)=>{
       state.popup = false;
     },
@@ -56,7 +59,14 @@ export const TeamBoardSlice = createSlice({
     builder.addCase(getHeros.rejected, (state, action) => {
       state.loading = false;
       state.heroList = [];
-    })
+      state.error = action.payload as string;
+    });
+    builder.addCase(predict.fulfilled, (state, action) => {
+      state.loading = false;
+      state.error = "";
+      
+    });
   },
+
 });
 

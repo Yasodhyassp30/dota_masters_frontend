@@ -13,3 +13,14 @@ export const getHeros = createAsyncThunk('getHeros', async ({}:any,thunkAPI) => 
           return thunkAPI.rejectWithValue(err.response.data.error);
       })
 })
+
+export const predict = createAsyncThunk('predict', async ({}:any,thunkAPI) => {
+  return await instance.post("api/predict",{
+    radiant:[],
+    dire:[]
+  }).then((res)=>{
+    return res.data;
+  }).catch((err)=>{
+    return thunkAPI.rejectWithValue(err.response.data.error);
+  })
+})
