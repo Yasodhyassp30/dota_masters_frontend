@@ -16,12 +16,23 @@ import { useDispatch } from "react-redux";
 import { RootState } from "../../../reducers/combinedReducers";
 import { TeamBoardSlice } from "../../../reducers/predictReducer/predictReducer";
 import { useEffect, useState } from "react";
+import { hero } from "../../../types/heroTypes";
 
 export default function Popup() {
   const open = useSelector((state: RootState) => state.predictreducer.popup);
+  const radiantHeroes = useSelector((state:RootState) => state.predictreducer.radiantHeroes);
+  const direHeroes = useSelector((state:RootState) => state.predictreducer.direHeroes);
+  const isRadiant = useSelector((state:RootState) => state.predictreducer.isRadiant);
+  interface herosList {
+    id: number;
+    localized_name: string;
+  }
   const options = useSelector(
     (state: RootState) => state.predictreducer.heroList
   );
+  const [avialableHeros,setAvialable] = useState<herosList[]>([])
+  const [postions,setPositions] = useState<number[]>([])
+  const [error,setError] = useState(" ")
   const dispatch = useDispatch();
   const [hero, setHero] = useState({
     id: 0,
@@ -29,7 +40,9 @@ export default function Popup() {
     gpm: 0,
     position:0
   });
+  
   const handleClose = () => {
+    setError("")
     dispatch(TeamBoardSlice.actions.closePopup());
   };
 
@@ -37,10 +50,60 @@ export default function Popup() {
     setHero({...hero,
         position: parseInt(event.target.value as string)} );
   };
-  interface herosList {
-    id: number;
-    localized_name: string;
+  const filterPositions = function(){
+        let temp:number[] = [1,2,3,4,5];
+        postions.forEach((position:number)=>{
+          if(isRadiant){
+            radiantHeroes.forEach((hero:hero)=>{  
+            if(temp.includes(hero.position))
+             temp = postions.filter((item:number)=>item !== hero.position)
+              
+            })
+          }else{
+            direHeroes.forEach((hero:hero)=>{
+              if(temp.includes(hero.position))
+              temp = postions.filter((item:number)=>item !== hero.position)
+             })
+          }
+        })
+        
+        setPositions(temp)
+      }
+  
+  const filterHeros = function(){
+    let temp:herosList[] = [];
+    options.forEach((hero:herosList)=>{
+      let inRadiant = false;  
+      let inDire = false;
+      radiantHeroes.forEach((radiantHero:hero)=>{
+        if(hero.id === radiantHero.id){
+          inRadiant = true;
+        }    
+      })
+      if(!inRadiant) {
+        direHeroes.forEach((direHero:hero)=>{
+          if(hero.id === direHero.id){
+            inDire = true;
+          }  
+        })
+        if(!inDire){
+          temp.push(hero)
+        }
+      }
+      
+    })
+    
+    setAvialable(temp)
   }
+
+  
+
+  useEffect(() => {
+    filterHeros()
+    filterPositions()
+}, [open]);
+
+
   useEffect(() => {
     setHero({...hero})
   },[hero.position])
@@ -56,11 +119,15 @@ export default function Popup() {
     }} maxWidth="sm">
       <DialogTitle>Pick Hero</DialogTitle>
       <DialogContent>
+        <p style={{
+          color:"red",
+          fontSize:"0.8rem",
+        }}>{error}</p>
         <Grid container spacing={1}>
           <Grid item xs={8}>
             <Autocomplete
               size="small"
-              options={options}
+              options={avialableHeros}
               disablePortal
               getOptionLabel={(option: herosList) => option.localized_name}
               sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
@@ -92,12 +159,13 @@ export default function Popup() {
                 size="small"
                 value={hero.position}
                 onChange={handleChange}
-            >   <MenuItem value={0}>Pick a Position</MenuItem>
-                <MenuItem value={1}>Position 1</MenuItem>
-                <MenuItem value={2}>Position 2</MenuItem>
-                <MenuItem value={3}>Position 3</MenuItem>
-                <MenuItem value={4}>Position 4</MenuItem>
-                <MenuItem value={5}>Position 5</MenuItem>
+                
+            >   
+            <MenuItem key={0} value={0}>Pick a Position</MenuItem>
+            {postions.map((position:number)=>{
+              return (<MenuItem key={position} value={position}>Position {position}</MenuItem>)
+            })}
+            
             </Select>
           </Grid>
           <Grid
@@ -138,14 +206,24 @@ export default function Popup() {
         </Button>
         <Button
           onClick={() => {
-            dispatch(TeamBoardSlice.actions.addHeroRadiant({hero:hero,position:hero.position}));
+            if(hero.id === 0||hero.gpm === 0||hero.position === 0){
+              setError("Please fill all the fields")
+              return;
+            }
+            if(isRadiant){
+              dispatch(TeamBoardSlice.actions.addHeroRadiant({hero:hero}));
+            }else{
+              dispatch(TeamBoardSlice.actions.addHerosDire({hero:hero}));
+            }
             setHero({
               id: 0,
               name: "",
               gpm: 0,
               position:0
             });
+            filterPositions()
             handleClose();
+            
           }}
         >
           Submit

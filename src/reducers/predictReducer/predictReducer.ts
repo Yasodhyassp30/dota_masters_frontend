@@ -16,6 +16,9 @@ const initialState = {
     heroList:[],
     loading:false,
     popup:false,
+    isRadiant:true,
+    currentPosition:0,
+    error:""
 }
 
 export const TeamBoardSlice = createSlice({
@@ -23,16 +26,24 @@ export const TeamBoardSlice = createSlice({
   initialState,
   reducers: {
     addHeroRadiant: (state,action) => {
-     state.radiantHeroes[action.payload.position] = action.payload.hero;
+     state.radiantHeroes[state.currentPosition] = action.payload.hero;
+     
     },
     addHerosDire:(state,action)=>{
-     state.direHeroes[action.payload.position] = action.payload.hero;
+     state.direHeroes[state.currentPosition] = action.payload.hero;
+    
     },
     closePopup:(state)=>{
       state.popup = false;
     },
-    openPopup:(state)=>{
+    openPopup:(state,action)=>{
+      state.isRadiant = action.payload.isRadiant;
+      state.currentPosition = action.payload.position;
       state.popup = true;
+    },
+    resetHeroes:(state)=>{
+      state.radiantHeroes = inititalHeros;
+      state.direHeroes = inititalHeros;
     }
   },
   extraReducers: (builder) => {

@@ -110,7 +110,7 @@ import {
                         </CardContent>
                         <CardActions>
                           <IconButton   onClick={() => {
-                                dispatch(TeamBoardSlice.actions.openPopup())
+                                dispatch(TeamBoardSlice.actions.openPopup({isRadiant:true,position:index}))
                               }}>
                             <Edit
                               sx={{
@@ -219,7 +219,7 @@ import {
                         </CardContent>
                         <CardActions>
                           <IconButton   onClick={() => {
-                                dispatch(TeamBoardSlice.actions.openPopup())
+                                dispatch(TeamBoardSlice.actions.openPopup({isRadiant:false,position:index}))
                               }}>
                             <Edit
                               sx={{
