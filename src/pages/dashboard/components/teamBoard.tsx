@@ -10,13 +10,16 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import { Edit } from "@mui/icons-material";
+import { ClearAll, Edit } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { TeamBoardSlice } from "../../../reducers/predictReducer/predictReducer";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { RootState } from "../../../reducers/combinedReducers";
 import { useState } from "react";
+import { predict } from "../../../reducers/predictReducer/predictAPI";
+import { AppDispatch } from "../../..";
+import { hero } from "../../../types/heroTypes";
 
 export default function Teamboard() {
   const radiantHeroes = useSelector(
@@ -25,7 +28,7 @@ export default function Teamboard() {
   const direHeroes = useSelector(
     (state: RootState) => state.predictreducer.direHeroes
   );
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const error = useSelector((state: RootState) => state.predictreducer.error);
   const handleClick = () => {
@@ -57,11 +60,12 @@ export default function Teamboard() {
   const cardStyles = {
     width: "100%",
     display: "flex",
-    justifyContent: "center",
+    justifyContent: "start",
     alignItems: "center",
     flexDirection: "column",
     textAlign: "start",
     padding: "0.2rem",
+    height: "100%",
   };
   return (
     <Grid container spacing={0}>
@@ -71,90 +75,79 @@ export default function Teamboard() {
         </Typography>
         <div
           style={{
-            width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
           }}
         >
           {radiantHeroes.map((hero, index) => {
             return (
               <Grid
-                container
-                spacing={0}
+                item
                 key={index}
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  margin: "0.5rem",
+                  width: "100%",
                 }}
               >
-                <Grid
-                  item
-                  xs={8}
-                  sx={{
-                    margin: "0.5rem",
-                  }}
-                >
-                  <Card sx={cardStyles}>
-                    <CardMedia
-                      component="img"
-                      image={
-                        hero.id === 0
-                          ? "/images/other/profile.png"
-                          : "/images/heros/" + hero.id + ".jpg"
-                      }
-                    />
-                    <CardContent
-                      sx={{
-                        padding: "2px",
+                <Card sx={cardStyles}>
+                  <CardMedia
+                    component="img"
+                    image={
+                      hero.id === 0
+                        ? "/images/other/profile.png"
+                        : "/images/heros/" + hero.id + ".png"
+                    }
+                  />
+                  <CardContent
+                    sx={{
+                      padding: "2px",
+                      flex:"1"
+                    }}
+                  >
+                    <Typography
+                      fontSize={"0.8rem"}
+                      fontWeight={"600"}
+                      variant="h5"
+                      component="div"
+                    >
+                      {hero.id === 0 ? "Pick Hero" : hero.name}
+                    </Typography>
+                    <Typography
+                      fontSize={"0.7rem"}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      {hero.position === 0
+                        ? "Pick"
+                        : "Position :" + hero.position}
+                    </Typography>
+                    <Typography
+                      fontSize={"0.6rem"}
+                      variant="body2"
+                      color="green"
+                    >
+                      {hero.id === 0 ? "" : "GPM :" + hero.gpm}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(
+                          TeamBoardSlice.actions.openPopup({
+                            isRadiant: true,
+                            position: index,
+                          })
+                        );
                       }}
                     >
-                      <Typography
-                        fontSize={"0.8rem"}
-                        fontWeight={"600"}
-                        variant="h5"
-                        component="div"
-                      >
-                        {hero.id === 0 ? "Pick Hero" : hero.name}
-                      </Typography>
-                      <Typography
-                        fontSize={"0.7rem"}
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {hero.position === 0
-                          ? "Pick"
-                          : "Position :" + hero.position}
-                      </Typography>
-                      <Typography
-                        fontSize={"0.6rem"}
-                        variant="body2"
-                        color="green"
-                      >
-                        {hero.id === 0 ? "" : "GPM :" + hero.gpm}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <IconButton
-                        onClick={() => {
-                          dispatch(
-                            TeamBoardSlice.actions.openPopup({
-                              isRadiant: true,
-                              position: index,
-                            })
-                          );
+                      <Edit
+                        sx={{
+                          fontSize: "1rem",
                         }}
-                      >
-                        <Edit
-                          sx={{
-                            fontSize: "1rem",
-                          }}
-                        />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
-                </Grid>
+                      />
+                    </IconButton>
+                  </CardActions>
+                </Card>
               </Grid>
             );
           })}
@@ -187,90 +180,79 @@ export default function Teamboard() {
         </Typography>
         <div
           style={{
-            width: "100%",
             display: "flex",
             justifyContent: "center",
-            alignItems: "center",
           }}
         >
           {direHeroes.map((hero, index) => {
             return (
               <Grid
-                container
-                spacing={0}
+                item
                 key={index}
                 sx={{
-                  display: "flex",
-                  justifyContent: "space-around",
-                  alignItems: "center",
+                  margin: "0.5rem",
+                  width: "100%",
                 }}
               >
-                <Grid
-                  item
-                  xs={8}
-                  sx={{
-                    margin: "0.5rem",
-                  }}
-                >
-                  <Card sx={cardStyles}>
-                    <CardMedia
-                      component="img"
-                      image={
-                        hero.id === 0
-                          ? "/images/other/profile.png"
-                          : "/images/heros/" + hero.id + ".jpg"
-                      }
-                    />
-                    <CardContent
-                      sx={{
-                        padding: "2px",
+                <Card sx={cardStyles}>
+                  <CardMedia
+                    component="img"
+                    image={
+                      hero.id === 0
+                        ? "/images/other/profile.png"
+                        : "/images/heros/" + hero.id + ".png"
+                    }
+                  />
+                  <CardContent
+                    sx={{
+                      padding: "2px",
+                      flex:"1"
+                    }}
+                  >
+                    <Typography
+                      fontSize={"0.8rem"}
+                      fontWeight={"600"}
+                      variant="h5"
+                      component="div"
+                    >
+                      {hero.id === 0 ? "Pick Hero" : hero.name}
+                    </Typography>
+                    <Typography
+                      fontSize={"0.7rem"}
+                      variant="body2"
+                      color="text.secondary"
+                    >
+                      {hero.position === 0
+                        ? "Pick"
+                        : "Position :" + hero.position}
+                    </Typography>
+                    <Typography
+                      fontSize={"0.6rem"}
+                      variant="body2"
+                      color="green"
+                    >
+                      {hero.id === 0 ? "" : "GPM :" + hero.gpm}
+                    </Typography>
+                  </CardContent>
+                  <CardActions>
+                    <IconButton
+                      onClick={() => {
+                        dispatch(
+                          TeamBoardSlice.actions.openPopup({
+                            isRadiant: false,
+                            position: index,
+                          })
+                        );
                       }}
                     >
-                      <Typography
-                        fontSize={"0.8rem"}
-                        fontWeight={"600"}
-                        variant="h5"
-                        component="div"
-                      >
-                        {hero.id === 0 ? "Pick Hero" : hero.id}
-                      </Typography>
-                      <Typography
-                        fontSize={"0.7rem"}
-                        variant="body2"
-                        color="text.secondary"
-                      >
-                        {hero.position === 0
-                          ? "Pick"
-                          : "Position :" + hero.position}
-                      </Typography>
-                      <Typography
-                        fontSize={"0.6rem"}
-                        variant="body2"
-                        color="green"
-                      >
-                        {hero.id === 0 ? "" : "GPM :" + hero.gpm}
-                      </Typography>
-                    </CardContent>
-                    <CardActions>
-                      <IconButton
-                        onClick={() => {
-                          dispatch(
-                            TeamBoardSlice.actions.openPopup({
-                              isRadiant: false,
-                              position: index,
-                            })
-                          );
+                      <Edit
+                        sx={{
+                          fontSize: "1rem",
                         }}
-                      >
-                        <Edit
-                          sx={{
-                            fontSize: "1rem",
-                          }}
-                        />
-                      </IconButton>
-                    </CardActions>
-                  </Card>
-                </Grid>
+                      />
+                    </IconButton>
+                  </CardActions>
+                </Card>
               </Grid>
             );
           })}
@@ -293,7 +275,12 @@ export default function Teamboard() {
             const direCheck = direHeroes.filter((hero) => hero.id === 0);
 
             if (radiantCheck.length === 0 && direCheck.length === 0) {
-              //dispatch(TeamBoardSlice.actions.predict())
+              dispatch(
+                predict({
+                  radiant: radiantHeroes ,
+                  dire: direHeroes ,
+                })
+              );
             } else {
               dispatch(
                 TeamBoardSlice.actions.setErrors("Please pick all heroes")
@@ -302,7 +289,27 @@ export default function Teamboard() {
             }
           }}
         >
-          Predict
+          Predict Win
+        </Button>
+
+        <Button
+          variant="contained"
+          size="large"
+          startIcon={<ClearAll />}
+          color="error"
+          sx={{
+            marginLeft: "1rem",
+          }}
+          onClick={() => {
+           
+              dispatch(
+                TeamBoardSlice.actions.resetHeroes()
+              );
+             
+            
+          }}
+        >
+          Clear All
         </Button>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>

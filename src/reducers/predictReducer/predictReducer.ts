@@ -15,23 +15,55 @@ const initialState = {
     direHeroes:inititalHeros,
     heroList:[],
     loading:false,
+    predicted:true,
     popup:false,
     isRadiant:true,
     currentPosition:0,
-    error:""
+    error:"",
+    prediction:[{
+      value:0,
+      id:0,
+      label:"Radiant"
+    },
+  {
+    value:0,
+    id:1,
+    label:"Dire"
+  }
+  ]
 }
 
 export const TeamBoardSlice = createSlice({
   name: "predict",
   initialState,
   reducers: {
-    addHeroRadiant: (state,action) => {
+    addHero: (state,action) => {
+     state.radiantHeroes.forEach((hero,index)=>{
+      if(hero.id===action.payload.hero.id || hero.position===action.payload.hero.position){
+       state.radiantHeroes[index] = {
+        id: 0,
+        position: 0,
+        gpm: 0,
+        name:""
+      };
+      }
+     })
+     state.direHeroes.forEach((hero,index)=>{
+      if(hero.id===action.payload.hero.id || hero.position===action.payload.hero.position){
+       state.direHeroes[index] = {
+        id: 0,
+        position: 0,
+        gpm: 0,
+        name:""
+      };
+      }
+     })
+     if(state.isRadiant){
      state.radiantHeroes[state.currentPosition] = action.payload.hero;
+     }else{
+      state.direHeroes[state.currentPosition] = action.payload.hero;
+     }
      
-    },
-    addHerosDire:(state,action)=>{
-     state.direHeroes[state.currentPosition] = action.payload.hero;
-    
     },
     setErrors:(state,action)=>{
       state.error = action.payload;
@@ -47,7 +79,7 @@ export const TeamBoardSlice = createSlice({
     resetHeroes:(state)=>{
       state.radiantHeroes = inititalHeros;
       state.direHeroes = inititalHeros;
-    }
+    },
   },
   extraReducers: (builder) => {
     builder.addCase(getHeros.fulfilled, (state, action) => {
@@ -64,6 +96,10 @@ export const TeamBoardSlice = createSlice({
     builder.addCase(predict.fulfilled, (state, action) => {
       state.loading = false;
       state.error = "";
+      const result = JSON.parse(action.payload.prediction);
+      state.prediction[0].value= (result[0] as number * 100 <=1)?1:Math.floor(result[0] as number*100);
+      state.prediction[1].value= 100 -state.prediction[0].value;
+      state.predicted = true;
       
     });
   },

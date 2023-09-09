@@ -14,10 +14,10 @@ export const getHeros = createAsyncThunk('getHeros', async ({}:any,thunkAPI) => 
       })
 })
 
-export const predict = createAsyncThunk('predict', async ({}:any,thunkAPI) => {
+export const predict = createAsyncThunk('predict', async ({radiant,dire}:any,thunkAPI) => {
   return await instance.post("api/predict",{
-    radiant:[],
-    dire:[]
+    radiant:radiant,
+    dire:dire
   }).then((res)=>{
     return res.data;
   }).catch((err)=>{

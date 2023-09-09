@@ -23,6 +23,7 @@ export default function Popup() {
   const radiantHeroes = useSelector((state:RootState) => state.predictreducer.radiantHeroes);
   const direHeroes = useSelector((state:RootState) => state.predictreducer.direHeroes);
   const isRadiant = useSelector((state:RootState) => state.predictreducer.isRadiant);
+  const position = useSelector((state:RootState) => state.predictreducer.currentPosition);
   interface herosList {
     id: number;
     localized_name: string;
@@ -30,15 +31,14 @@ export default function Popup() {
   const options = useSelector(
     (state: RootState) => state.predictreducer.heroList
   );
-  const [avialableHeros,setAvialable] = useState<herosList[]>([])
-  const [postions,setPositions] = useState<number[]>([])
+  const [postions,setPositions] = useState<number[]>([1,2,3,4,5])
   const [error,setError] = useState(" ")
   const dispatch = useDispatch();
   const [hero, setHero] = useState({
-    id: 0,
-    name: "",
-    gpm: 0,
-    position:0
+    id: (isRadiant)?radiantHeroes[position].id:direHeroes[position].id,
+    name: (isRadiant)?radiantHeroes[position].name:direHeroes[position].name,
+    gpm: (isRadiant)?radiantHeroes[position].gpm:direHeroes[position].gpm||0,
+    position:(isRadiant)?radiantHeroes[position].position:direHeroes[position].position
   });
   
   const handleClose = () => {
@@ -50,58 +50,6 @@ export default function Popup() {
     setHero({...hero,
         position: parseInt(event.target.value as string)} );
   };
-  const filterPositions = function(){
-        let temp:number[] = [1,2,3,4,5];
-        postions.forEach((position:number)=>{
-          if(isRadiant){
-            radiantHeroes.forEach((hero:hero)=>{  
-            if(temp.includes(hero.position))
-             temp = postions.filter((item:number)=>item !== hero.position)
-              
-            })
-          }else{
-            direHeroes.forEach((hero:hero)=>{
-              if(temp.includes(hero.position))
-              temp = postions.filter((item:number)=>item !== hero.position)
-             })
-          }
-        })
-        
-        setPositions(temp)
-      }
-  
-  const filterHeros = function(){
-    let temp:herosList[] = [];
-    options.forEach((hero:herosList)=>{
-      let inRadiant = false;  
-      let inDire = false;
-      radiantHeroes.forEach((radiantHero:hero)=>{
-        if(hero.id === radiantHero.id){
-          inRadiant = true;
-        }    
-      })
-      if(!inRadiant) {
-        direHeroes.forEach((direHero:hero)=>{
-          if(hero.id === direHero.id){
-            inDire = true;
-          }  
-        })
-        if(!inDire){
-          temp.push(hero)
-        }
-      }
-      
-    })
-    
-    setAvialable(temp)
-  }
-
-  
-
-  useEffect(() => {
-    filterHeros()
-    filterPositions()
-}, [open]);
 
 
   useEffect(() => {
@@ -127,18 +75,22 @@ export default function Popup() {
           <Grid item xs={8}>
             <Autocomplete
               size="small"
-              options={avialableHeros}
+              options={options}
               disablePortal
+              value={
+                {
+                id: hero.id,
+                localized_name: hero.name
+                }}
               getOptionLabel={(option: herosList) => option.localized_name}
               sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
               renderInput={(params) => <TextField {...params} label="Hero" />}
               onChange={(event, value) => {
                 if (value) {
                   setHero({
+                    ...hero,
                     id: value.id,
                     name: value.localized_name,
-                    gpm: 0,
-                    position:0
                   });
                 }
               }}
@@ -181,7 +133,7 @@ export default function Popup() {
             <img
               src={
                 hero.id !== 0
-                  ? `/images/heros/${hero.id}.jpg`
+                  ? `/images/heros/${hero.id}.png`
                   : "/images/other/profile.png"
               }
               alt="hero"
@@ -210,18 +162,15 @@ export default function Popup() {
               setError("Please fill all the fields")
               return;
             }
-            if(isRadiant){
-              dispatch(TeamBoardSlice.actions.addHeroRadiant({hero:hero}));
-            }else{
-              dispatch(TeamBoardSlice.actions.addHerosDire({hero:hero}));
-            }
+            
+              dispatch(TeamBoardSlice.actions.addHero({hero:hero}));
+            
             setHero({
               id: 0,
               name: "",
               gpm: 0,
               position:0
             });
-            filterPositions()
             handleClose();
             
           }}

@@ -4,3 +4,10 @@ export interface hero {
     position:number;
     name:string;
 }
+
+export interface heroListItems {
+    id:number;
+    gpm:number;
+    position:number;
+
+}
