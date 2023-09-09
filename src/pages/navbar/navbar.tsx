@@ -1,8 +1,14 @@
-import { Home,SportsEsports,AccountCircle,List} from "@mui/icons-material";
+import { Home,SportsEsports,List, Logout} from "@mui/icons-material";
 import { Button } from "@mui/material";
 import { useLocation } from 'react-router-dom';
+import { useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
+import { RootState } from "../../reducers/combinedReducers";
+import { authSlice } from "../../reducers/authReducers/authReducer";
 
 export default function Navbar() {
+  const dispatch = useDispatch();
+  const username = useSelector((state: RootState) => state.authreducer.user.username)
     const buttonStyles = {
         marginTop: '1rem',
         color: 'white',
@@ -17,7 +23,7 @@ export default function Navbar() {
         { icon: <SportsEsports />, label: 'predictor', path: '/dashboard' },
         { icon: <Home />, label: 'Hero Picker', path: '/hero-picker' },
         { icon: <List />, label: 'Matches', path: '/matches' },
-        { icon: <AccountCircle />, label: 'User', path: '/user' },
+        { icon: <Logout />, label: username, path: '/user' },
       ];
       
       return (
@@ -39,7 +45,15 @@ export default function Navbar() {
             <Button key={button.label} sx={{
               ...buttonStyles,
               backgroundColor: button.path === location.pathname ? 'black' : '',
-            }} >
+            }} 
+            onClick={() => {
+              if (button.path === '/user') {
+                dispatch(
+                  authSlice.actions.logout()
+                )
+              }
+            }}
+            >
               {button.icon}
               {button.label}
             </Button>
