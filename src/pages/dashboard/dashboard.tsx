@@ -5,8 +5,6 @@ import { getHeros } from "../../reducers/predictReducer/predictAPI";
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { AppDispatch } from "../..";
-import { useSelector } from "react-redux";
-import { RootState } from "../../reducers/combinedReducers";
 import Results from "./components/results";
 
 export default function Dashboard() {

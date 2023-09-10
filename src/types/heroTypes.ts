@@ -11,3 +11,17 @@ export interface heroListItems {
     position:number;
 
 }
+
+interface prediction{
+    radiant:number;
+    dire:number
+}
+
+export interface matches{
+    _id:{$oid:string}
+    radiant:hero[];
+    dire:hero[];
+    feedback:number;
+    create:string;
+    prediction:prediction;
+}

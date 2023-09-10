@@ -12,195 +12,18 @@ import {
   styled,
   tableCellClasses,
 } from "@mui/material";
+import { useEffect } from "react";
+import { get_matches } from "../../reducers/matchesReducers/matchAPI";
+import { useDispatch,useSelector } from "react-redux";
+import { AppDispatch } from "../..";
+import { RootState } from "../../reducers/combinedReducers";
 
 export default function Matches() {
-  const rows: any[] = [
-    {
-      radiant: [
-        {
-          position: 1,
-          gpm: 612,
-          id: 115,
-        },
-        {
-          position: 5,
-          gpm: 317,
-          id: 100,
-        },
-        {
-          position: 4,
-          gpm: 329,
-          id: 50,
-        },
-        {
-          position: 1,
-          gpm: 684,
-          id: 41,
-        },
-        {
-          position: 3,
-          gpm: 674,
-          id: 97,
-        },
-      ],
-      dire: [
-        {
-          position: 5,
-          gpm: 399,
-          id: 84,
-        },
-        {
-          position: 1,
-          gpm: 1000,
-          id: 71,
-        },
-        {
-          position: 2,
-          gpm: 609,
-          id: 22,
-        },
-        {
-          position: 4,
-          gpm: 399,
-          id: 26,
-        },
-        {
-          position: 3,
-          gpm: 603,
-          id: 104,
-        },
-      ],
-      created: "2023/06/09",
-      prediction: {
-        radiant: "55%",
-        dire: "45%",
-      },
-      feedback: 0,
-    },
-    {
-        radiant: [
-          {
-            position: 1,
-            gpm: 612,
-            id: 115,
-          },
-          {
-            position: 5,
-            gpm: 317,
-            id: 100,
-          },
-          {
-            position: 4,
-            gpm: 329,
-            id: 50,
-          },
-          {
-            position: 1,
-            gpm: 684,
-            id: 41,
-          },
-          {
-            position: 3,
-            gpm: 674,
-            id: 97,
-          },
-        ],
-        dire: [
-          {
-            position: 5,
-            gpm: 399,
-            id: 84,
-          },
-          {
-            position: 1,
-            gpm: 1000,
-            id: 71,
-          },
-          {
-            position: 2,
-            gpm: 609,
-            id: 22,
-          },
-          {
-            position: 4,
-            gpm: 399,
-            id: 26,
-          },
-          {
-            position: 3,
-            gpm: 603,
-            id: 104,
-          },
-        ],
-        created: "2023/06/09",
-        prediction: {
-          radiant: "55%",
-          dire: "45%",
-        },
-        feedback: 1,
-      },
-      {
-        radiant: [
-          {
-            position: 1,
-            gpm: 612,
-            id: 115,
-          },
-          {
-            position: 5,
-            gpm: 317,
-            id: 100,
-          },
-          {
-            position: 4,
-            gpm: 329,
-            id: 50,
-          },
-          {
-            position: 1,
-            gpm: 684,
-            id: 41,
-          },
-          {
-            position: 3,
-            gpm: 674,
-            id: 97,
-          },
-        ],
-        dire: [
-          {
-            position: 5,
-            gpm: 399,
-            id: 84,
-          },
-          {
-            position: 1,
-            gpm: 1000,
-            id: 71,
-          },
-          {
-            position: 2,
-            gpm: 609,
-            id: 22,
-          },
-          {
-            position: 4,
-            gpm: 399,
-            id: 26,
-          },
-          {
-            position: 3,
-            gpm: 603,
-            id: 104,
-          },
-        ],
-        created: "2023/06/09",
-        prediction: {
-          radiant: "55%",
-          dire: "45%",
-        },
-      },
-  ];
+  const matches = useSelector((state:RootState)=>state.matchesreducer.matches)
+  const dispatch = useDispatch<AppDispatch>()
+  useEffect(()=>{
+    dispatch(get_matches({page:1}))
+  },[])
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -258,7 +81,7 @@ export default function Matches() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {rows.map((row: any) => (
+            {matches.map((row: any) => (
               <TableRow key={row.radiant._id}>
                 <TableCell component="th" scope="row">
                   <Grid container spacing={0}>

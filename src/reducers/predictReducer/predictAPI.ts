@@ -1,6 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 import instance from "../../axiosConfig";
-import { useSelector } from "react-redux";
+
 
 export const getHeros = createAsyncThunk('getHeros', async ({}:any,thunkAPI) => {
   
