@@ -1,13 +1,13 @@
 import { Home,SportsEsports,List, Logout} from "@mui/icons-material";
 import { Button } from "@mui/material";
-import { useLocation } from 'react-router-dom';
-import { useSelector } from "react-redux";
-import { useDispatch } from "react-redux";
+import { useLocation, useNavigate } from 'react-router-dom';
+import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../reducers/combinedReducers";
 import { authSlice } from "../../reducers/authReducers/authReducer";
 
 export default function Navbar() {
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const username = useSelector((state: RootState) => state.authreducer.user.username)
     const buttonStyles = {
         marginTop: '1rem',
@@ -51,6 +51,8 @@ export default function Navbar() {
                 dispatch(
                   authSlice.actions.logout()
                 )
+              }else{
+                navigate(button.path)
               }
             }}
             >

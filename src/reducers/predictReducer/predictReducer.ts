@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { hero } from "../../types/heroTypes";
-import {getHeros,predict} from './predictAPI';
+import {getHeros,predict,save_match} from './predictAPI';
 
 
 const inititalHeros: hero[] = Array(5).fill({
@@ -39,7 +39,7 @@ export const TeamBoardSlice = createSlice({
   reducers: {
     addHero: (state,action) => {
      state.radiantHeroes.forEach((hero,index)=>{
-      if(hero.id===action.payload.hero.id || hero.position===action.payload.hero.position){
+      if(hero.id===action.payload.hero.id || (hero.position===action.payload.hero.position&& state.isRadiant)){
        state.radiantHeroes[index] = {
         id: 0,
         position: 0,
@@ -49,7 +49,7 @@ export const TeamBoardSlice = createSlice({
       }
      })
      state.direHeroes.forEach((hero,index)=>{
-      if(hero.id===action.payload.hero.id || hero.position===action.payload.hero.position){
+      if(hero.id===action.payload.hero.id || (hero.position===action.payload.hero.position && !state.isRadiant)){
        state.direHeroes[index] = {
         id: 0,
         position: 0,
@@ -79,6 +79,17 @@ export const TeamBoardSlice = createSlice({
     resetHeroes:(state)=>{
       state.radiantHeroes = inititalHeros;
       state.direHeroes = inititalHeros;
+      state.predicted =false;
+      state.prediction = [{
+        value:0,
+        id:0,
+        label:"Radiant"
+      },
+    {
+      value:0,
+      id:1,
+      label:"Dire"
+    }]
     },
   },
   extraReducers: (builder) => {
@@ -102,6 +113,9 @@ export const TeamBoardSlice = createSlice({
       state.predicted = true;
       
     });
+    builder.addCase(save_match.fulfilled,(state,action)=>{
+      state.predicted=false;
+    })
   },
 
 });

@@ -10,16 +10,16 @@ import {
   Snackbar,
   Typography,
 } from "@mui/material";
-import { ClearAll, Edit } from "@mui/icons-material";
+import { ClearAll, Edit, Save } from "@mui/icons-material";
 import { useDispatch } from "react-redux";
 import { TeamBoardSlice } from "../../../reducers/predictReducer/predictReducer";
 import CheckCircleOutlineIcon from "@mui/icons-material/CheckCircleOutline";
 import { useSelector } from "react-redux/es/hooks/useSelector";
 import { RootState } from "../../../reducers/combinedReducers";
 import { useState } from "react";
-import { predict } from "../../../reducers/predictReducer/predictAPI";
+import { predict,save_match } from "../../../reducers/predictReducer/predictAPI";
 import { AppDispatch } from "../../..";
-import { hero } from "../../../types/heroTypes";
+
 
 export default function Teamboard() {
   const radiantHeroes = useSelector(
@@ -31,9 +31,9 @@ export default function Teamboard() {
   const dispatch = useDispatch<AppDispatch>();
   const [open, setOpen] = useState(false);
   const error = useSelector((state: RootState) => state.predictreducer.error);
-  const handleClick = () => {
-    setOpen(true);
-  };
+  const prediction =useSelector((state:RootState)=>state.predictreducer.predicted)
+  const predicted_values = useSelector((state:RootState)=>state.predictreducer.prediction)
+
 
   const handleClose = (
     event?: React.SyntheticEvent | Event,
@@ -267,7 +267,6 @@ export default function Teamboard() {
       >
         <Button
           variant="contained"
-          size="large"
           startIcon={<CheckCircleOutlineIcon />}
           color="success"
           onClick={() => {
@@ -294,7 +293,6 @@ export default function Teamboard() {
 
         <Button
           variant="contained"
-          size="large"
           startIcon={<ClearAll />}
           color="error"
           sx={{
@@ -310,6 +308,28 @@ export default function Teamboard() {
           }}
         >
           Clear All
+        </Button>
+        
+        <Button
+          variant="contained"
+          startIcon={<Save />}
+          color="primary"
+          disabled={!prediction}
+          sx={{
+            marginLeft: "1rem",
+          }}
+          onClick={() => {
+            dispatch(save_match({
+              radiant: radiantHeroes ,
+              dire: direHeroes ,
+              prediction:{
+                radiant: predicted_values[0].value,
+                dire: predicted_values[1].value
+              }
+          }))
+          }}
+        >
+         Save
         </Button>
         <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
           <Alert onClose={handleClose} severity="error" sx={{ width: "100%" }}>

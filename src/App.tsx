@@ -6,6 +6,8 @@ import { RootState } from './reducers/combinedReducers';
 import Login from './pages/login/login';
 import Dashboard from './pages/dashboard/dashboard';
 import Navbar from './pages/navbar/navbar';
+import Picker from './pages/picker/picker';
+import Matches from './pages/matches/matches';
 
 function App() {
   const logged = useSelector((state: RootState) => state.authreducer.isLoggedIn)
@@ -24,6 +26,8 @@ function App() {
           <Route path="/login" element={(!logged) ? <Login /> : <Navigate to="/dashboard" />} />
           <Route path="/register" element={(!logged) ? <Register /> : <Navigate to="/dashboard" />} />
           <Route path="/dashboard" element={(logged) ? <Dashboard/>: <Navigate to="/login" />} />
+          <Route path = "/hero-picker" element={(logged)?<Picker/> : <Navigate to="/login"/>}/>
+          <Route path = "/matches" element = {(logged)?<Matches/>: <Navigate to= "/login"/>}/>
         </Routes>
       </div>
     </div>
