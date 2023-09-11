@@ -1,4 +1,4 @@
-import { ThumbDown, ThumbUp } from "@mui/icons-material";
+import { Delete, ThumbDown, ThumbUp } from "@mui/icons-material";
 import {
   Alert,
   Button,
@@ -15,7 +15,7 @@ import {
   tableCellClasses,
 } from "@mui/material";
 import { useEffect } from "react";
-import { get_matches,provide_feedback } from "../../reducers/matchesReducers/matchAPI";
+import { get_matches,provide_feedback,delete_match } from "../../reducers/matchesReducers/matchAPI";
 import { MatchSlice } from "../../reducers/matchesReducers/matchReducer";
 import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../..";
@@ -149,7 +149,7 @@ export default function Matches() {
                     fontSize: "0.7rem",
                   }}
                 >
-                  {!row.feedback && row.feedback != 0 ? (
+                  {!row.feedback && row.feedback !== 0 ? (
                     <div>
                       <Button
                         variant="contained"
@@ -170,7 +170,7 @@ export default function Matches() {
 
                       <Button
                         variant="contained"
-                        color="error"
+                        color="primary"
                         size="small"
                         sx={{
                           margin: "0.2rem",
@@ -184,6 +184,22 @@ export default function Matches() {
                         }}
                       >
                         <ThumbDown fontSize="small"  />
+                      </Button>
+                      <Button
+                        variant="contained"
+                        color="error"
+                        size="small"
+                        sx={{
+                          margin: "0.2rem",
+                        }}
+                        onClick={()=>{
+                          dispatch(delete_match({
+                            id:row._id.$oid,
+                            
+                          }))
+                        }}
+                      >
+                        <Delete fontSize="small"  />
                       </Button>
                     </div>
                   ) : row.feedback === 1 ? (

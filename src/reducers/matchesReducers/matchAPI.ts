@@ -26,3 +26,16 @@ export const provide_feedback = createAsyncThunk('provideFeedback',async({id,fee
         return thunkAPI.rejectWithValue(err.response.data.error)
     })
 })
+
+export const delete_match =createAsyncThunk('deleteMatch',async({id}:any,thunkAPI)=>{
+    return await instance.delete("api/delete_match",{
+        data:{id}
+    }).then((res)=>{
+        return {
+            msg:res.data.msg,
+            id,
+        }
+    }).catch((err)=>{
+        return thunkAPI.rejectWithValue(err.response.data.error)
+    })
+})

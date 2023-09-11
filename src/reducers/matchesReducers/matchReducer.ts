@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { matches } from "../../types/heroTypes";
-import {get_matches,provide_feedback} from "./matchAPI";
+import {delete_match, get_matches,provide_feedback} from "./matchAPI";
 
 const initialState = {
     matches:<matches[]>[],
@@ -32,6 +32,11 @@ export const MatchSlice=createSlice({
                 }
             })
 
+        });
+        builder.addCase(delete_match.fulfilled,(state,action)=>{
+            state.msg =action.payload.msg
+            state.matches = state.matches.filter((match)=>match._id.$oid!==action.payload.id)
+            state.openSnackBar = true
         })
     }
 })  
