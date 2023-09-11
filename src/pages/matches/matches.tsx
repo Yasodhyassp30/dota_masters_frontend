@@ -1,8 +1,10 @@
 import { ThumbDown, ThumbUp } from "@mui/icons-material";
 import {
+  Alert,
   Button,
   Grid,
   Paper,
+  Snackbar,
   Table,
   TableBody,
   TableCell,
@@ -13,17 +15,24 @@ import {
   tableCellClasses,
 } from "@mui/material";
 import { useEffect } from "react";
-import { get_matches } from "../../reducers/matchesReducers/matchAPI";
-import { useDispatch,useSelector } from "react-redux";
+import { get_matches,provide_feedback } from "../../reducers/matchesReducers/matchAPI";
+import { MatchSlice } from "../../reducers/matchesReducers/matchReducer";
+import { useDispatch, useSelector } from "react-redux";
 import { AppDispatch } from "../..";
 import { RootState } from "../../reducers/combinedReducers";
 
 export default function Matches() {
-  const matches = useSelector((state:RootState)=>state.matchesreducer.matches)
-  const dispatch = useDispatch<AppDispatch>()
-  useEffect(()=>{
-    dispatch(get_matches({page:1}))
-  },[])
+  const matches = useSelector(
+    (state: RootState) => state.matchesreducer.matches
+  );
+  const open = useSelector((state:RootState)=>state.matchesreducer.openSnackBar)
+  const msg =  useSelector((state:RootState)=>state.matchesreducer.msg)
+  const dispatch = useDispatch<AppDispatch>();
+
+  useEffect(() => {
+    dispatch(get_matches({ page: 1 }));
+  }, []);
+
   const StyledTableCell = styled(TableCell)(({ theme }) => ({
     [`&.${tableCellClasses.head}`]: {
       backgroundColor: theme.palette.common.black,
@@ -140,40 +149,66 @@ export default function Matches() {
                     fontSize: "0.7rem",
                   }}
                 >
-                  {!row.feedback && row.feedback !=0 ? (
+                  {!row.feedback && row.feedback != 0 ? (
                     <div>
-                      <Button variant="contained" color="success" sx={{
-                        margin: "0.2rem",
+                      <Button
+                        variant="contained"
+                        color="success"
+                        sx={{
+                          margin: "0.2rem",
+                        }}
+                      onClick={()=>{
+                        dispatch(provide_feedback({
+                          feedback:1,
+                          id:row._id.$oid,
+                          
+                        }))
                       }}>
-                        <ThumbUp />
+                      
+                        <ThumbUp fontSize="small"/>
                       </Button>
 
                       <Button
                         variant="contained"
                         color="error"
+                        size="small"
                         sx={{
                           margin: "0.2rem",
                         }}
+                        onClick={()=>{
+                          dispatch(provide_feedback({
+                            feedback:0,
+                            id:row._id.$oid,
+                            
+                          }))
+                        }}
                       >
-                        <ThumbDown />
+                        <ThumbDown fontSize="small"  />
                       </Button>
                     </div>
                   ) : row.feedback === 1 ? (
-                    <Button variant="contained" color="success" disabled={true} sx={{
+                    <Button
+                      variant="contained"
+                      color="success"
+                      size="small"
+                      disabled={true}
+                      sx={{
                         margin: "0.2rem",
-                      }}>
-                      <ThumbUp />
+                      }}
+                    >
+                      <ThumbUp fontSize="small" />
                     </Button>
                   ) : (
                     <Button
                       variant="contained"
                       color="error"
                       disabled={true}
+                      size="small"
                       sx={{
                         margin: "0.2rem",
                       }}
                     >
-                      <ThumbDown />
+                      <ThumbDown fontSize="small" />
                     </Button>
                   )}
                 </TableCell>
@@ -182,6 +217,11 @@ export default function Matches() {
           </TableBody>
         </Table>
       </TableContainer>
+      <Snackbar open={open} autoHideDuration={6000} onClose={()=>{dispatch(MatchSlice.actions.snackBarClose())}}>
+          <Alert onClose={()=>{dispatch(MatchSlice.actions.snackBarClose())}} severity="success" sx={{ width: "100%" }}>
+            {msg}
+          </Alert>
+        </Snackbar>
     </div>
   );
 }

@@ -14,7 +14,7 @@ const initialState = {
   direHeroes: inititalHeros,
   heroList: [],
   loading: false,
-  predicted: true,
+  predicted: false,
   popup: false,
   isRadiant: true,
   currentPosition: 0,
