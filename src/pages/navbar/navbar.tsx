@@ -4,6 +4,7 @@ import { useLocation, useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../reducers/combinedReducers";
 import { authSlice } from "../../reducers/authReducers/authReducer";
+import AssignmentTurnedInIcon from '@mui/icons-material/AssignmentTurnedIn';
 
 export default function Navbar() {
   const dispatch = useDispatch();
@@ -21,7 +22,7 @@ export default function Navbar() {
       const location = useLocation();
       const buttons = [
         { icon: <SportsEsports />, label: 'predictor', path: '/dashboard' },
-        { icon: <Home />, label: 'Hero Picker', path: '/hero-picker' },
+        { icon: <AssignmentTurnedInIcon/>, label: 'Hero Picker', path: '/hero-picker' },
         { icon: <List />, label: 'Matches', path: '/matches' },
         { icon: <Logout />, label: username, path: '/user' },
       ];

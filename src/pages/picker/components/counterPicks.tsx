@@ -17,7 +17,7 @@ export default function CounterPicks() {
         {counters.map((counter)=>{
             return(
               <Grid item xs={6} lg={2}  key={counter.id}>
-              <Card sx={{ display: "flex", width: "100%", justifyContent:"center",alignItems:"center" }}>
+              <Card sx={{ display: "flex", height:"100%",width: "100%", justifyContent:"center",alignItems:"center" }}>
               <CardContent sx={{ flex: "1 0 auto", width: "100%" }}>
               <CardMedia
                 component="img"
