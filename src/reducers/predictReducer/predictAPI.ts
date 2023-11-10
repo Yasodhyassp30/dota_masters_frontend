@@ -25,6 +25,16 @@ export const predict = createAsyncThunk('predict', async ({radiant,dire}:any,thu
   })
 })
 
+export const counter = createAsyncThunk('counter', async ({hero}:any,thunkAPI) => {
+  return await instance.post("api/counter",{
+    hero
+  }).then((res)=>{
+    return res.data;
+  }).catch((err)=>{
+    return thunkAPI.rejectWithValue(err.response.data.error);
+  })
+})
+
 export const save_match = createAsyncThunk('save_match', async ({radiant,dire,prediction}:any,thunkAPI) => {
   return await instance.post("api/save_match",{
     radiant:radiant,

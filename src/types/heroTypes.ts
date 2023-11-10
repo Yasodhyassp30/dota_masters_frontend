@@ -25,3 +25,9 @@ export interface matches{
     create:string;
     prediction:prediction;
 }
+
+export interface pickListItems{
+    id:number;
+    description:string;
+    name:string;
+}

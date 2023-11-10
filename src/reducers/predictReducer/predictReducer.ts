@@ -1,6 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { hero } from "../../types/heroTypes";
-import { getHeros, predict, save_match } from "./predictAPI";
+import { counter, getHeros, predict, save_match } from "./predictAPI";
 
 const inititalHeros: hero[] = Array(5).fill({
   id: 0,
@@ -10,6 +10,13 @@ const inititalHeros: hero[] = Array(5).fill({
 });
 
 const initialState = {
+  pickerHero:{
+    id:0,
+    localized_name:"",
+    description:"",
+    name :""
+  },
+  counters:[],
   radiantHeroes: inititalHeros,
   direHeroes: inititalHeros,
   heroList: [],
@@ -81,6 +88,10 @@ export const TeamBoardSlice = createSlice({
       state.currentPosition = action.payload.position;
       state.popup = true;
     },
+    selectHero:(state,action)=>{
+      const list  = state.heroList.filter((hero:any)=>hero.id == action.payload)
+      state.pickerHero = list[0]
+    },
     resetHeroes: (state) => {
       state.radiantHeroes = inititalHeros;
       state.direHeroes = inititalHeros;
@@ -111,6 +122,18 @@ export const TeamBoardSlice = createSlice({
       state.heroList = [];
       state.error = action.payload as string;
     });
+    builder.addCase(counter.fulfilled, (state, action) => {
+      state.loading = false;
+      const returned: string = action.payload.prediction;
+      const heros = JSON.parse(returned);
+      
+      state.counters = state.heroList.filter((hero:any)=>heros.includes(hero.id) && state.pickerHero.id!= hero.id);
+    });
+    builder.addCase(counter.rejected, (state, action) => {
+      state.loading = false;
+      state.counters = [];
+      state.error = action.payload as string;
+    });
     builder.addCase(predict.fulfilled, (state, action) => {
       state.loading = false;
       state.error = "";
@@ -118,7 +141,7 @@ export const TeamBoardSlice = createSlice({
       state.prediction[0].value =
         (result[0] as number) * 100 <= 1
           ? 1
-          : Math.floor((result[0] as number) * 100);
+          : Math.round((result[0] as number) * 100);
       state.prediction[1].value = 100 - state.prediction[0].value;
       state.predicted = true;
     });

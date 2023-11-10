@@ -9,16 +9,29 @@ import {
 } from "@mui/material";
 import { useSelector, useDispatch } from "react-redux";
 import { RootState } from "../../reducers/combinedReducers";
+import CounterPicks from "./components/counterPicks";
+import { TeamBoardSlice } from "../../reducers/predictReducer/predictReducer";
+import { AppDispatch } from "../..";
+import { counter, getHeros } from "../../reducers/predictReducer/predictAPI";
+import { useEffect } from "react";
 
 export default function Picker() {
-  const dispatch = useDispatch();
+  const dispatch = useDispatch<AppDispatch>();
   const heros = useSelector(
     (state: RootState) => state.predictreducer.heroList
+  );
+  const SelectedHero = useSelector(
+    (state: RootState) => state.predictreducer.pickerHero
   );
   interface herosList {
     id: number;
     localized_name: string;
   }
+
+  useEffect(() => {
+    dispatch(getHeros({}));
+    
+  }, []);
   return (
     <Grid
       container
@@ -35,30 +48,33 @@ export default function Picker() {
           getOptionLabel={(option: herosList) => option.localized_name}
           sx={{ width: "100%", marginTop: "1rem", marginBottom: "1rem" }}
           renderInput={(params) => <TextField {...params} label="Hero" />}
-          onChange={(event, value) => {}}
+          onChange={(event, value) => {
+            if(value){
+              dispatch(TeamBoardSlice.actions.selectHero(value.id));
+              dispatch(counter({hero:value.id}));
+            }
+          }}
         />
       </Grid>
       <Grid item xs={12} lg={6}>
-        <Card sx={{ display: "flex", width: "100%" }}>
+       {(SelectedHero.id!=0)? <Card sx={{ display: "flex", width: "100%" }}>
           <CardContent sx={{ flex: "1 0 auto", width: "60%" }}>
             <Typography component="div" variant="h6">
-              Ember Spirit
+              {SelectedHero.localized_name}
             </Typography>
             <Typography variant="body2" color="text.secondary">
-              Able to transform enemy attacks into self-healing, Abaddon can
-              survive almost any assault. Shielding allies and launching his
-              double-edged coil at a friend or foe, he is always ready to ride
-              into the thick of battle.
+              {SelectedHero.description}
             </Typography>
           </CardContent>
           <CardMedia
             component="img"
             sx={{ width: "auto" }}
-            image="/images/heros/105.png"
+            image={"/images/heros/" + SelectedHero.id + ".png"}
             alt="Hero portrait"
           />
-        </Card>
+        </Card>:<div></div>}
       </Grid>
+        <CounterPicks/>
     </Grid>
   );
 }
