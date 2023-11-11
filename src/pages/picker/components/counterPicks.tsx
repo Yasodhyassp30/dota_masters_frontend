@@ -16,19 +16,19 @@ export default function CounterPicks() {
     >
         {counters.map((counter)=>{
             return(
-              <Grid item xs={6} lg={2}  key={counter.id}>
-              <Card sx={{ display: "flex", height:"100%",width: "100%", justifyContent:"center",alignItems:"center" }}>
+              <Grid item xs={4} lg={2}  key={counter.id}>
+              <Card sx={{ display: "flex", height:"100%",width: "100%", justifyContent:"center",alignItems:"start",backgroundColor:"white" }}>
               <CardContent sx={{ flex: "1 0 auto", width: "100%" }}>
               <CardMedia
                 component="img"
-                sx={{ width: "auto" }}
+                sx={{ width: "100%" }}
                 image={"/images/heros/"+ counter.id+".png"} 
                 alt="Hero portrait"
               />
-                <Typography component="div" variant="inherit">
+                <Typography component="div" variant="inherit" fontSize={"1.2rem"} padding={"10px"}>
                   {counter.localized_name}
                 </Typography>
-                <Typography variant="body2" color="text.secondary" fontSize={"0.7rem"}>
+                <Typography variant="body2" color="text.secondary" fontSize={"0.9rem"} padding={"10px"}>
                  {counter.description}
                 </Typography>
               </CardContent>

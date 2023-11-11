@@ -47,6 +47,8 @@ export default function Matches() {
             width: "calc(100% - 2rem)",
             margin: "1rem",
             textAlign: "start",
+            position:"relative",
+            zIndex:2,
           }}
           size="small"
         >
@@ -238,6 +240,21 @@ export default function Matches() {
             {msg}
           </Alert>
         </Snackbar>
+
+        <div style={
+      {
+        position: 'fixed',
+        top: 0,
+        left: "5rem",
+        width: '100%',
+        height: '100%',
+        opacity:0.3,
+        backgroundImage: 'url("images/other/graph.jpg")',
+        backgroundSize: 'cover',
+        backgroundPosition: 'center',
+        zIndex: 1
+      }
+    }></div>
     </div>
   );
 }
