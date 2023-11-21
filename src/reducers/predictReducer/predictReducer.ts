@@ -141,7 +141,7 @@ export const TeamBoardSlice = createSlice({
       state.prediction[0].value =
         (result[0] as number) * 100 <= 1
           ? 1
-          : Math.round((result[0] as number) * 100);
+          : (result[0] as number * 100);
       state.prediction[1].value = 100 - state.prediction[0].value;
       state.predicted = true;
     });
